@@ -10,9 +10,9 @@ h1 {
   font-size: 24px;
 }
 
-p{
+/* p{
   font-size: 14px;
-}
+} */
 
 @theme inline {
   --color-background: var(--background);

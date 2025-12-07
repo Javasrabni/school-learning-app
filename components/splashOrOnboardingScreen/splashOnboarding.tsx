@@ -3,14 +3,54 @@ import Image from "next/image"
 import { useState } from "react"
 import { vibrateBtn } from "../vibrateBtn/ButtonVibrate"
 import { ChevronLeftIcon } from "lucide-react"
+import RegisterPage from "../auth/register/page"
 
 const SplashOnboarding = () => {
     const [progressBar, setProgressBar] = useState(1)
 
+    // USER REGISTER!!!!
+    const [username, setUsername] = useState("")
+    const [email, setEmail] = useState("")
+    const [grade, setGrade] = useState("")
+    const [password, setPassword] = useState("")
+    async function PostRegisterAcc() {
+        if (username.length >= 20 || username.length < 5) {
+            alert("Masukkan nama yang valid")
+            return
+        }
+
+        try {
+            const res = await fetch('/api/register', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username,
+                    email,
+                    grade,
+                    password
+                })
+            })
+            if (res.ok) {
+                setUsername("")
+                setEmail("")
+                setGrade("")
+                setPassword("")
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    // BUTTON CTA
     function handleButton() {
         vibrateBtn()
-        setProgressBar(prev => (prev === 3 ? 1 : prev + 1))
+        if (progressBar === 3) {
+            PostRegisterAcc()
+        } else {
+            setProgressBar(prev => prev + 1)
+        }
     }
+
 
     const OnBoardingData = [
         { no: 1, h1: "E-Learning School", p: 'Belajar matematika Sekolah Menengah Pertama (SMP) menyenangkan bersama sch-learning!', image: '/Assets/OnBoarding/boarding1.png' },
@@ -27,7 +67,7 @@ const SplashOnboarding = () => {
                     style={{ transform: `translateX(-${(progressBar - 1) * 100}%)` }}
                 >
                     {OnBoardingData.map(i => (
-                        <span key={i.no} className={`flex-shrink-0 w-full flex ${i.no === 2 ? "flex-col-reverse" : "flex-col"} items-center gap-8 justify-between px-8 transition-opacity duration-700 ease-in-out ${progressBar === i.no ? "opacity-100" : "opacity-0"}`}>
+                        <span key={i.no} className={`flex-shrink-0 w-full flex ${i.no === 2 ? "flex-col-reverse" : "flex-col"} items-center gap-8 justify-center px-8 transition-opacity duration-700 ease-in-out ${progressBar === i.no ? "opacity-100" : "opacity-0"}`}>
                             <span className="flex flex-col gap-1 text-center">
                                 <h1 className="font-bold">{i.h1}</h1>
                                 <p className="text-stone-400">{i.p}</p>
@@ -43,11 +83,21 @@ const SplashOnboarding = () => {
                             )}
 
                             {i.no === 3 && (
-                                <div className="w-full h-full flex flex-col gap-4">
-                                    <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="Nama Kamu" />
-                                    <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="kamu@gmail.com" />
-                                    <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="••••••••••••" />
-                                </div>
+                                <RegisterPage
+                                    username={username}
+                                    setUsername={setUsername}
+                                    email={email}
+                                    setEmail={setEmail}
+                                    grade={grade}
+                                    setGrade={setGrade}
+                                    password={password}
+                                    setPassword={setPassword}
+                                />
+                                // <div className="w-full h-full flex flex-col gap-4">
+                                //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="Nama Kamu" />
+                                //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="kamu@gmail.com" />
+                                //     <input type="text" className="bg-stone-100 h-12 rounded-sm px-4 text-sm" placeholder="••••••••••••" />
+                                // </div>
                             )}
                         </span>
                     ))}
@@ -72,7 +122,7 @@ const SplashOnboarding = () => {
                     className={`transition-all duration-100 ease-in-out flex items-center justify-center ${progressBar > 1 ? "w-[20%] opacity-100" : "w-0 opacity-0 pointer-events-none"
                         } h-13 font-bold rounded-full cursor-pointer ${progressBar === 3 ? "bg-stone-900 text-white" : "bg-[var(--accentColor)] text-white"
                         }`}
-                    onClick={() => setProgressBar(prev => prev - 1)}
+                    onClick={() => { vibrateBtn(); setProgressBar(prev => prev - 1) }}
                 >
                     <ChevronLeftIcon width={16} />
                 </button>
