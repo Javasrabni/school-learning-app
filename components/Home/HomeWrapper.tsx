@@ -39,7 +39,7 @@ export default function HomeWrapper() {
         checkLogin();
     }, []);
 
-    if (loading) return null; // tampilan loading sementara
+    if (loading) return <p>loading...</p>; // tampilan loading sementara
     return (
         <div className="p-8 relative">
             <SplashOnboarding />
