@@ -11,7 +11,7 @@ import { setToken } from "@/utils/storage"
 
 const SplashOnboarding = () => {
     const router = useRouter()
-    const { user } = useUser()
+    const { user, refreshUser } = useUser()
     const [progressBar, setProgressBar] = useState(1)
 
     // USER REGISTER!!!!
@@ -135,12 +135,12 @@ const SplashOnboarding = () => {
                 setEmail("")
                 setPassword("")
 
-                if(data.success && data.token) {
-                    await setToken(data.token)
+                if(data.accessToken) {
+                    await setToken(data.accessToken)
                 }
-
-                router.refresh()
-                window.location.replace("/dashboard")
+                refreshUser()
+                router.push("/dashboard")
+                // window.location.replace("/dashboard")
             }
         } catch (error) {
             console.error(error)

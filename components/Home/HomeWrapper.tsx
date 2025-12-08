@@ -1,20 +1,35 @@
-'use client';
-import { useUser } from "@/context/userDataCookie";
-import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
+'use client'
+import { useEffect, useState } from "react";
+import { getToken, setToken } from "@/utils/token";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
 
 export default function HomeWrapper() {
-  const { user, loading } = useUser();
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading && user) {
-      router.replace("/dashboard"); // pakai replace supaya history tidak menumpuk
-    }
-  }, [user, loading, router]);
+    const checkLogin = async () => {
+      let token = await getToken();
 
-  if (loading) return null; // atau loading spinner
+      if (!token) {
+        // coba refresh token dari cookie httpOnly
+        const res = await fetch("/api/refresh", { method: "POST", credentials: "include" });
+        const data = await res.json();
+        if (res.ok && data.accessToken) {
+          token = data.accessToken;
+          if(token) await setToken(token);
+        }
+      }
+
+      if (token) router.replace("/dashboard");
+      else setLoading(false);
+    };
+
+    checkLogin();
+  }, [router]);
+
+  if (loading) return null;
 
   return (
     <div className="p-8 relative">

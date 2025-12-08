@@ -1,25 +1,36 @@
-'use client';
-import { useUser } from "@/context/userDataCookie";
-import SignedPage from "@/components/signedPage/SignedPage";
-import { useRouter } from "next/navigation";
+'use client'
 import { useEffect, useState } from "react";
+import { getToken } from "@/utils/token";
+import { useRouter } from "next/navigation";
+import SignedPage from "@/components/signedPage/SignedPage";
 
 export default function Dashboard() {
-  const { user, loading } = useUser();
   const router = useRouter();
-  const [ready, setReady] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!loading) {
-      if (!user) {
-        router.replace("/"); // belum login
-      } else {
-        setReady(true); // sudah login
-      }
-    }
-  }, [user, loading, router]);
+    const checkToken = async () => {
+      let token = await getToken();
 
-  if (!ready) return null;
+      if (!token) {
+        const res = await fetch("/api/refresh", { method: "POST", credentials: "include" });
+        const data = await res.json();
+        if (res.ok && data.accessToken) {
+          token = data.accessToken;
+        }
+      }
+
+      if (!token) {
+        router.replace("/");
+      } else {
+        setLoading(false);
+      }
+    };
+
+    checkToken();
+  }, [router]);
+
+  if (loading) return null;
 
   return <SignedPage />;
 }
