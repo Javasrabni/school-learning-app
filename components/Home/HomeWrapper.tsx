@@ -1,48 +1,39 @@
-"use client"
-import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
-import { useRouter } from "next/navigation";
+'use client'
 import { useEffect, useState } from "react";
-import { getToken, setToken } from "@/utils/authStorage";
+import { getToken, setToken } from "@/utils/token";
+import { useRouter } from "next/navigation";
+import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
 
 export default function HomeWrapper() {
-    const router = useRouter();
-    const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const checkLogin = async () => {
-            const accessToken = await getToken();
+  useEffect(() => {
+    const checkLogin = async () => {
+      let token = await getToken();
 
-            if (accessToken) {
-                // Redirect langsung jika token masih ada
-                router.replace("/dashboard");
-                return;
-            }
+      if (!token) {
+        // coba refresh token dari cookie httpOnly
+        const res = await fetch("/api/refresh", { method: "POST", credentials: "include" });
+        const data = await res.json();
+        if (res.ok && data.accessToken) {
+          token = data.accessToken;
+          if(token) await setToken(token);
+        }
+      }
 
-            // Token tidak ada, coba refresh
-            const res = await fetch("/api/refresh", {
-                method: "POST",
-                credentials: "include", // ambil refresh_token dari cookie
-            });
+      if (token) router.replace("/dashboard");
+      else setLoading(false);
+    };
 
-            const data = await res.json();
+    checkLogin();
+  }, [router]);
 
-            if (data.accessToken) {
-                await setToken(data.accessToken);  // simpan akses baru
-                router.replace("/dashboard");
-                return;
-            }
+  if (loading) return <p>Load..</p>;
 
-            // Tidak ada token dan refresh gagal → tampilkan HomeWrapper
-            setLoading(false);
-        };
-
-        checkLogin();
-    }, []);
-
-    if (loading) return <p>Load..</p>; // tampilan loading sementara
-    return (
-        <div className="p-8 relative">
-            <SplashOnboarding />
-        </div>
-    );
+  return (
+    <div className="p-8 relative">
+      <SplashOnboarding />
+    </div>
+  );
 }
