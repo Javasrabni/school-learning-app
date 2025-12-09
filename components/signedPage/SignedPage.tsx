@@ -43,7 +43,7 @@ export default function SignedPage() {
 
     return (
         <motion.div
-            className="w-full px-6 pt-6 space-y-6"
+            className="w-full px-6 pt-6 pb-24 space-y-6"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
@@ -137,12 +137,57 @@ export default function SignedPage() {
     );
 }
 
-/* Component agar lebih bersih */
-function StatCard({ label, value, color }: any) {
-    return (
-        <div className={`p-4 bg-${color}-50 border border-${color}-200 rounded-xl`}>
-            <p className="text-xs text-gray-500">{label}</p>
-            <p className={`text-xl font-bold text-${color}-700`}>{value}</p>
-        </div>
-    );
+//* Semua warna Tailwind yang umum */
+const colorMap: Record<string, {
+  bg: string;
+  border: string;
+  text: string;
+}> = {
+  slate:   { bg: "bg-slate-50",   border: "border-slate-200",   text: "text-slate-700" },
+  gray:    { bg: "bg-gray-50",    border: "border-gray-200",    text: "text-gray-700" },
+  zinc:    { bg: "bg-zinc-50",    border: "border-zinc-200",    text: "text-zinc-700" },
+  neutral: { bg: "bg-neutral-50", border: "border-neutral-200", text: "text-neutral-700" },
+  stone:   { bg: "bg-stone-50",   border: "border-stone-200",   text: "text-stone-700" },
+
+  red:     { bg: "bg-red-50",     border: "border-red-200",     text: "text-red-700" },
+  orange:  { bg: "bg-orange-50",  border: "border-orange-200",  text: "text-orange-700" },
+  amber:   { bg: "bg-amber-50",   border: "border-amber-200",   text: "text-amber-700" },
+  yellow:  { bg: "bg-yellow-50",  border: "border-yellow-200",  text: "text-yellow-700" },
+  lime:    { bg: "bg-lime-50",    border: "border-lime-200",    text: "text-lime-700" },
+
+  green:   { bg: "bg-green-50",   border: "border-green-200",   text: "text-green-700" },
+  emerald: { bg: "bg-emerald-50", border: "border-emerald-200", text: "text-emerald-700" },
+  teal:    { bg: "bg-teal-50",    border: "border-teal-200",    text: "text-teal-700" },
+  cyan:    { bg: "bg-cyan-50",    border: "border-cyan-200",    text: "text-cyan-700" },
+  sky:     { bg: "bg-sky-50",     border: "border-sky-200",     text: "text-sky-700" },
+
+  blue:    { bg: "bg-blue-50",    border: "border-blue-200",    text: "text-blue-700" },
+  indigo:  { bg: "bg-indigo-50",  border: "border-indigo-200",  text: "text-indigo-700" },
+  violet:  { bg: "bg-violet-50",  border: "border-violet-200",  text: "text-violet-700" },
+  purple:  { bg: "bg-purple-50",  border: "border-purple-200",  text: "text-purple-700" },
+  fuchsia: { bg: "bg-fuchsia-50", border: "border-fuchsia-200", text: "text-fuchsia-700" },
+
+  pink:    { bg: "bg-pink-50",    border: "border-pink-200",    text: "text-pink-700" },
+  rose:    { bg: "bg-rose-50",    border: "border-rose-200",    text: "text-rose-700" }
+};
+
+
+/* Komponen */
+function StatCard({
+  label,
+  value,
+  color
+}: {
+  label: string;
+  value: number | string;
+  color: string;
+}) {
+  const theme = colorMap[color] ?? colorMap.blue; // fallback aman
+
+  return (
+    <div className={`p-4 rounded-xl border ${theme.bg} ${theme.border}`}>
+      <p className="text-xs text-gray-500">{label}</p>
+      <p className={`text-xl font-bold ${theme.text}`}>{value}</p>
+    </div>
+  );
 }

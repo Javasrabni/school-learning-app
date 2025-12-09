@@ -59,7 +59,7 @@ export default function ProfileClient() {
   ];
 
   return (
-    <motion.div className="w-full min-h-screen bg-gray-50" {...fadeUp}>
+    <motion.div className="w-full min-h-screen " {...fadeUp}>
       <motion.div className="max-w-4xl mx-auto p-6 space-y-6" {...fadeUp}>
 
         {/* HEADER */}

@@ -2,48 +2,54 @@
 
 import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getToken, setToken } from "@/utils/authStorage";
 
 export default function HomeWrapper() {
-    const router = useRouter();
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
-        const checkLogin = async () => {
-            // 1. Cek token lokal dulu (sangat cepat ±1ms)
-            const accessToken = await getToken();
+  // Biar UI langsung muncul, lalu token check dilakukan setelah mount.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-            if (accessToken) {
-                router.replace("/dashboard");
-                return;
-            }
+  // Background token check
+  useEffect(() => {
+    if (!mounted) return;
 
-            // 2. Refresh token, dilakukan di background
-            try {
-                const res = await fetch("/api/refresh", {
-                    method: "POST",
-                    credentials: "include",
-                });
+    const checkLogin = async () => {
+      const accessToken = await getToken();
 
-                const data = await res.json();
+      if (accessToken) {
+        router.replace("/dashboard");
+        return;
+      }
 
-                if (data?.accessToken) {
-                    await setToken(data.accessToken);
-                    router.replace("/dashboard");
-                }
-            } catch (err) {
-                console.error("Refresh failed:", err);
-            }
-        };
+      try {
+        const res = await fetch("/api/refresh", {
+          method: "POST",
+          credentials: "include",
+        });
 
-        // *Jalankan setelah 10–80ms supaya UI tampil dulu*
-        setTimeout(checkLogin, 50);
-    }, [router]);
+        const data = await res.json();
 
-    // UI langsung tampil tanpa delay
-    return (
-        <div className="p-8 relative">
-            <SplashOnboarding />
-        </div>
-    );
+        if (data?.accessToken) {
+          await setToken(data.accessToken);
+          router.replace("/dashboard");
+        }
+      } catch (err) {
+        console.error("Refresh failed:", err);
+      }
+    };
+
+    // cek login tanpa delay (sekarang UI sudah muncul)
+    checkLogin();
+  }, [mounted, router]);
+
+  return (
+    <div className="p-8 relative">
+      <SplashOnboarding />
+    </div>
+  );
 }
