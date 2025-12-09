@@ -30,7 +30,7 @@ export default function RootLayout({
         className={`${InterFont.variable} ${PoppinsFont.variable} antialiased`}
       >
         <UserProvider>
-          <div className="m-auto max-w-[32rem] min-h-screen h-full pb-14 pt-14 w-full bg-white">
+          <div className="m-auto max-w-[32rem] h-screen  w-full bg-white">
             {children}
           </div>
         </UserProvider>
