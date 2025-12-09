@@ -1,5 +1,6 @@
 "use client";
 
+import { Capacitor } from "@capacitor/core";
 import SplashOnboarding from "@/components/splashOrOnboardingScreen/splashOnboarding";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -7,27 +8,39 @@ import { getToken, setToken } from "@/utils/authStorage";
 
 export default function HomeWrapper() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
+  const [ready, setReady] = useState(false);
 
-  // Biar UI langsung muncul, lalu token check dilakukan setelah mount.
+  // Pastikan WebView dan plugin siap
   useEffect(() => {
-    setMounted(true);
+    const timer = setTimeout(() => {
+      setReady(true);
+    }, 250); // 250ms = aman untuk Android
+
+    return () => clearTimeout(timer);
   }, []);
 
-  // Background token check
   useEffect(() => {
-    if (!mounted) return;
+    if (!ready) return;
 
     const checkLogin = async () => {
-      const accessToken = await getToken();
-
-      if (accessToken) {
-        router.replace("/dashboard");
-        return;
-      }
-
       try {
-        const res = await fetch("/api/refresh", {
+        let accessToken = null;
+
+        // Pastikan plugin Storage siap
+        if (Capacitor.isNativePlatform()) {
+          accessToken = await getToken();
+        } else {
+          accessToken = await getToken();
+        }
+
+        if (accessToken) {
+          router.replace("/dashboard");
+          return;
+        }
+
+        // Gunakan absolute URL untuk Android (penting)
+        const base = process.env.NEXT_PUBLIC_API_URL;
+        const res = await fetch(`${base}/api/refresh`, {
           method: "POST",
           credentials: "include",
         });
@@ -39,16 +52,15 @@ export default function HomeWrapper() {
           router.replace("/dashboard");
         }
       } catch (err) {
-        console.error("Refresh failed:", err);
+        console.error("Login check error:", err);
       }
     };
 
-    // cek login tanpa delay (sekarang UI sudah muncul)
     checkLogin();
-  }, [mounted, router]);
+  }, [ready]);
 
   return (
-    <div className="p-8 relative">
+    <div className="w-screen h-screen overflow-hidden relative">
       <SplashOnboarding />
     </div>
   );
