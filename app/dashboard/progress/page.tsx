@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/userDataCookie";
+import { motion } from "framer-motion";
 
 type Material = {
   _id: string;
@@ -17,13 +18,21 @@ type ProgressType = {
   score: number;
 };
 
+const fadeUp = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.35 }
+};
+
 export default function ProgressPage() {
-  const { user, loading: userLoading } = useUser();
+  const { user } = useUser();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [progress, setProgress] = useState<ProgressType[]>([]);
+  const [loadingMaterials, setLoadingMaterials] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(true);
   const router = useRouter();
 
-  // Matikan sticky / snap scroll yang bikin "lengket"
+  // disable sticky scroll behaviour
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
     return () => {
@@ -33,107 +42,188 @@ export default function ProgressPage() {
 
   useEffect(() => {
     const fetchMaterials = async () => {
-      const res = await fetch("/api/materials");
-      const data = await res.json();
-      setMaterials(data);
+      try {
+        const res = await fetch("/api/materials");
+        const data = await res.json();
+        setMaterials(data);
+      } finally {
+        setLoadingMaterials(false);
+      }
     };
     fetchMaterials();
   }, []);
 
   useEffect(() => {
-    if (!user?._id) return;
+    if (!user?._id) {
+      setProgress([]);
+      setLoadingProgress(false);
+      return;
+    }
+
     const fetchProgress = async () => {
-      const res = await fetch(`/api/progress?userId=${user._id}`);
-      const data = await res.json();
-      setProgress(data);
+      try {
+        const res = await fetch(`/api/progress?userId=${user._id}`);
+        const data = await res.json();
+        setProgress(data);
+      } finally {
+        setLoadingProgress(false);
+      }
     };
+
     fetchProgress();
   }, [user]);
 
-  if (userLoading) return <p>Memuat data...</p>;
+  const isLoading = loadingMaterials || loadingProgress;
+
+  const renderSkeletonCard = () => (
+    <div className="bg-white border rounded-xl p-5 shadow-sm animate-pulse">
+      <div className="h-5 bg-neutral-200 rounded w-2/3"></div>
+      <div className="mt-3 h-4 bg-neutral-200 rounded w-1/4"></div>
+      <div className="mt-4 space-y-2">
+        <div className="h-3 bg-neutral-200 rounded w-full"></div>
+        <div className="h-3 bg-neutral-200 rounded w-4/5"></div>
+        <div className="h-3 bg-neutral-200 rounded w-3/4"></div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="px-6 pt-6 space-y-8">
-      <div>
+    <motion.div
+      {...fadeUp}
+      className="px-6 pt-6 space-y-8"
+    >
+      {/* Title */}
+      <motion.div {...fadeUp}>
         <h1 className="text-2xl font-bold">Perjalanan Belajar</h1>
         <p className="text-sm text-neutral-500">
           Lihat perkembangan belajar kamu dari setiap kelas.
         </p>
-      </div>
+      </motion.div>
 
-      {[7, 8, 9].map((cls) => (
-        <section key={cls} className="space-y-4">
-          <h2 className="text-xl font-semibold">Kelas {cls}</h2>
+      {[7, 8, 9].map((cls, cindex) => {
+        const filtered = materials.filter((m) => m.class === cls);
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {materials
-              .filter((m) => m.class === cls)
-              .map((m) => {
-                const completed = progress.filter(
-                  (p) => p.materialTitle === m.title && p.isRead
-                ).length;
+        return (
+          <motion.section
+            key={cls}
+            {...fadeUp}
+            transition={{ duration: 0.35, delay: cindex * 0.15 }}
+            className="space-y-4"
+          >
+            <motion.h2
+              {...fadeUp}
+              transition={{ duration: 0.35, delay: 0.05 }}
+              className="text-xl font-semibold"
+            >
+              Kelas {cls}
+            </motion.h2>
 
-                const percentage = Math.round(
-                  (completed / m.subTopics.length) * 100
-                );
+            <motion.div
+              {...fadeUp}
+              transition={{ duration: 0.35, delay: 0.1 }}
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
+            >
+              {/* Skeleton */}
+              {isLoading &&
+                Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i}>{renderSkeletonCard()}</div>
+                ))}
 
-                return (
-                  <div
-                    key={m._id}
-                    className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer"
-                    onClick={() => router.push(`/dashboard/material/${m._id}`)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <h3 className="font-semibold text-lg">{m.title}</h3>
-                      <span
-                        className={`text-xs px-2 py-1 rounded-md ${
-                          percentage === 100
-                            ? "bg-green-100 text-green-700 border border-green-300"
-                            : "bg-blue-100 text-blue-700 border border-blue-300"
-                        }`}
+              {/* Data cards */}
+              {!isLoading &&
+                filtered.map((m, index) => {
+                  const completed = progress.filter(
+                    (p) => p.materialTitle === m.title && p.isRead
+                  ).length;
+
+                  const percentage = Math.round(
+                    (completed / m.subTopics.length) * 100
+                  );
+
+                  return (
+                    <motion.div
+                      key={m._id}
+                      {...fadeUp}
+                      transition={{
+                        duration: 0.35,
+                        delay: index * 0.07
+                      }}
+                      className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition cursor-pointer"
+                      onClick={() => router.push(`/dashboard/material/${m._id}`)}
+                    >
+                      <motion.div
+                        {...fadeUp}
+                        transition={{ duration: 0.3, delay: 0.05 }}
+                        className="flex justify-between items-start"
                       >
-                        {percentage}%
-                      </span>
-                    </div>
+                        <h3 className="font-semibold text-lg">{m.title}</h3>
+                        <span
+                          className={`text-xs px-2 py-1 rounded-md ${
+                            percentage === 100
+                              ? "bg-green-100 text-green-700 border border-green-300"
+                              : "bg-blue-100 text-blue-700 border border-blue-300"
+                          }`}
+                        >
+                          {percentage}%
+                        </span>
+                      </motion.div>
 
-                    <p className="text-sm text-neutral-500 mt-1">
-                      {completed}/{m.subTopics.length} sub-topik selesai
-                    </p>
+                      <motion.p
+                        {...fadeUp}
+                        transition={{ duration: 0.3, delay: 0.1 }}
+                        className="text-sm text-neutral-500 mt-1"
+                      >
+                        {completed}/{m.subTopics.length} sub-topik selesai
+                      </motion.p>
 
-                    <div className="mt-4 bg-neutral-100 rounded-lg p-3 max-h-32 overflow-y-auto">
-                      <ul className="text-sm space-y-1">
-                        {m.subTopics.map((s, idx) => {
-                          const read = progress.some(
-                            (p) =>
-                              p.materialTitle === m.title &&
-                              p.subTopicIndex === idx &&
-                              p.isRead
-                          );
+                      <motion.div
+                        {...fadeUp}
+                        transition={{ duration: 0.3, delay: 0.15 }}
+                        className="mt-4 bg-neutral-100 rounded-lg p-3 max-h-32 overflow-y-auto"
+                      >
+                        <motion.ul
+                          {...fadeUp}
+                          transition={{ duration: 0.3, delay: 0.2 }}
+                          className="text-sm space-y-1"
+                        >
+                          {m.subTopics.map((s, idx) => {
+                            const read = progress.some(
+                              (p) =>
+                                p.materialTitle === m.title &&
+                                p.subTopicIndex === idx &&
+                                p.isRead
+                            );
 
-                          return (
-                            <li
-                              key={idx}
-                              className={`flex items-center gap-2 ${
-                                read ? "text-green-700 font-medium" : ""
-                              }`}
-                            >
-                              <span
-                                className={`w-2 h-2 rounded-full ${
-                                  read ? "bg-green-500" : "bg-gray-400"
+                            return (
+                              <motion.li
+                                key={idx}
+                                {...fadeUp}
+                                transition={{
+                                  duration: 0.25,
+                                  delay: 0.25 + idx * 0.02
+                                }}
+                                className={`flex items-center gap-2 ${
+                                  read ? "text-green-700 font-medium" : ""
                                 }`}
-                              />
-                              {s.title}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-        </section>
-      ))}
-    </div>
+                              >
+                                <span
+                                  className={`w-2 h-2 rounded-full ${
+                                    read ? "bg-green-500" : "bg-gray-400"
+                                  }`}
+                                />
+                                {s.title}
+                              </motion.li>
+                            );
+                          })}
+                        </motion.ul>
+                      </motion.div>
+                    </motion.div>
+                  );
+                })}
+            </motion.div>
+          </motion.section>
+        );
+      })}
+    </motion.div>
   );
 }
