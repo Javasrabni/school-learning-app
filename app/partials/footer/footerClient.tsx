@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { FlameIcon, HomeIcon, User2Icon } from 'lucide-react'
 
 const FooterClient = () => {
-    const [activeTab, setActiveTab] = useState(0)
+    const [activeTab, setActiveTab] = useState(1) // Ubah dari 0 ke 1 agar Home aktif secara default
     const [highlightStyle, setHighlightStyle] = useState({ left: 0, width: 0 })
     const tabRefs = useRef<(HTMLAnchorElement | null)[]>([])
     const containerRef = useRef<HTMLDivElement | null>(null)
@@ -20,9 +20,9 @@ const FooterClient = () => {
             const rect = tabRefs.current[activeTab - 1]!.getBoundingClientRect()
             const containerRect = containerRef.current.getBoundingClientRect()
             const height = containerRect.height // Tinggi container
-            const widthMultiplier = 1.5 // Faktor untuk membuat width lebih lebar (sesuaikan nilai ini untuk lebar yang diinginkan)
-            const highlightWidth = height * widthMultiplier // Width lebih lebar dari sebelumnya
-            const centerLeft = rect.left - containerRect.left + (rect.width - highlightWidth) / 2 // Posisi tengah Link, disesuaikan dengan width baru
+            const widthMultiplier = 1.5 // Faktor untuk membuat width lebih lebar
+            const highlightWidth = height * widthMultiplier // Width lebih lebar
+            const centerLeft = rect.left - containerRect.left + (rect.width - highlightWidth) / 2 // Posisi tengah Link
             setHighlightStyle({
                 left: centerLeft,
                 width: highlightWidth
