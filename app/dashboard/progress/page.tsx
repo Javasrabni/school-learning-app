@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/userDataCookie";
 import { motion } from "framer-motion";
+import { BrainIcon, WaypointsIcon } from "lucide-react";
 
 type Material = {
   _id: string;
@@ -18,7 +19,7 @@ type ProgressType = {
   score: number;
 };
 
-const fadeUp = {
+export const fadeUp = {
   initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.35 }
@@ -90,13 +91,16 @@ export default function ProgressPage() {
   return (
     <motion.div
       {...fadeUp}
-      className="px-6 pt-6 space-y-8"
+      className="px-6 space-y-8"
     >
       {/* Title */}
-      <motion.div {...fadeUp}>
-        <h1 className="text-2xl font-bold">Perjalanan Belajar</h1>
-        <p className="text-sm text-neutral-500">
-          Lihat perkembangan belajar kamu dari setiap kelas.
+      <motion.div {...fadeUp} className="flex flex-col gap-1">
+        <span className="flex flex-row gap-2 items-center">
+          <WaypointsIcon width={16} />
+          <h1 className="text-base font-semibold font-[poppins]">Silabus dan materi belajar</h1>
+        </span>
+        <p className="text-xs text-stone-400">
+          Mulai belajar matematika sesuai dengan tingkatan kamu, mulai dari kelas 7 - 9.
         </p>
       </motion.div>
 
@@ -158,11 +162,10 @@ export default function ProgressPage() {
                       >
                         <h3 className="font-semibold text-lg">{m.title}</h3>
                         <span
-                          className={`text-xs px-2 py-1 rounded-md ${
-                            percentage === 100
+                          className={`text-xs px-2 py-1 rounded-md ${percentage === 100
                               ? "bg-green-100 text-green-700 border border-green-300"
                               : "bg-blue-100 text-blue-700 border border-blue-300"
-                          }`}
+                            }`}
                         >
                           {percentage}%
                         </span>
@@ -202,14 +205,12 @@ export default function ProgressPage() {
                                   duration: 0.25,
                                   delay: 0.25 + idx * 0.02
                                 }}
-                                className={`flex items-center gap-2 ${
-                                  read ? "text-green-700 font-medium" : ""
-                                }`}
+                                className={`flex items-center gap-2 ${read ? "text-green-700 font-medium" : ""
+                                  }`}
                               >
                                 <span
-                                  className={`w-2 h-2 rounded-full ${
-                                    read ? "bg-green-500" : "bg-gray-400"
-                                  }`}
+                                  className={`w-2 h-2 rounded-full ${read ? "bg-green-500" : "bg-gray-400"
+                                    }`}
                                 />
                                 {s.title}
                               </motion.li>

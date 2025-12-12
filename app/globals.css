@@ -6,6 +6,11 @@
   --accentColor: #2a01ff; 
 }
 
+::-webkit-scrollbar{
+  height: 0px;
+  width: 0px;
+}
+
 /* h1 {
   font-size: 24px;
 } */

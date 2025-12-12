@@ -7,6 +7,11 @@ import { BellIcon, PlayIcon, SearchIcon, SettingsIcon, SigmaSquareIcon, TrophyIc
 // import Image from "next/image";
 import Link from "next/link";
 import Carousel from "../carousel/carousel";
+// import ProgressPage from "@/app/dashboard/progress/page";
+import Image from "next/image";
+import { WaypointsIcon } from "lucide-react";
+import { fadeUp } from "@/app/dashboard/progress/page";
+
 type Material = {
     _id: string;
     title: string;
@@ -47,10 +52,7 @@ export default function SignedPage() {
     const level = user?.level ?? Math.floor(totalScore / 50) + 1;
     const streak = user?.streak ?? Math.min(totalRead, 30);
 
-    // rekomendasi
-    const readMaterials = new Set(progress?.filter((p) => p.isRead).map((p) => p.materialTitle));
-    const allMaterials = Array.from(new Set(progress?.map((p) => p.materialTitle) ?? []));
-    const recommended = allMaterials.find((m) => !readMaterials.has(m));
+
 
     const trophyColors = ['text-yellow-500', 'text-gray-400', 'text-amber-700'];
 
@@ -76,6 +78,8 @@ export default function SignedPage() {
         <div className="flex flex-col gap-0">
             {/* Greeting — TAMPIL LANGSUNG (tidak perlu data API) */}
             <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-16 px-6 gap-4">
+
+                {/* GREETING N PHOTO PROFILE */}
                 <div className="w-full h-full flex flex-row justify-between items-center gap-0">
                     <div>
                         <h1 className="font-bold font-[poppins] text-base text-white">
@@ -91,6 +95,8 @@ export default function SignedPage() {
                         </Link>
                     </div>
                 </div>
+
+                {/* SEARCH INPUT N SETTING */}
                 <div className="flex items-center justify-between gap-3">
                     <div className="w-full h-full flex items-center gap-4 bg-white rounded-lg px-4">
                         <SearchIcon width={16} className="text-gray-400" />
@@ -100,19 +106,22 @@ export default function SignedPage() {
                         <SettingsIcon width={16} className="text-gray-400" />
                     </div>
                 </div>
+
             </div>
 
             {/* BODY SECTION */}
-            <div className="w-full pb-24 space-y-6 bg-white rounded-t-4xl mt-[-42px]" >
+            <div className="w-full pb-24 space-y-8 bg-white rounded-t-4xl mt-[-42px]" >
 
-
-                {/* ============================
-                    CARAOUSEL
-                ============================ */}
+                {/* CARAOUSEL (SECTION) */}
                 <div className="h-48 w-full pb-8 px-6 mt-6 relative">
+
+                    <div className="absolute top-3 left-[50%] translate-x-[-50%] z-30 text-white">
+                        <p className={'text-xs font-bold font-[urbanist]'}>Mathemagic</p>
+                    </div>
+
                     <div className="absolute bottom-12 left-[50%] translate-x-[-50%] z-30 text-white bg-white px-4 py-[2px] rounded-full">
                         <span className="flex flex-row gap-2 items-center">
-                            <PlayIcon width={12} className="text-[var(--accentColor)]" />
+                            <PlayIcon width={12} fill="var(--accentColor)" className="text-[var(--accentColor)]" />
                             <p className="text-xs text-black font-[inter]">Mulai</p>
                         </span>
 
@@ -120,7 +129,7 @@ export default function SignedPage() {
                     <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]} />
                 </div>
 
-                {/* DASAR */}
+                {/* MULAI DARI DASAR (SECTION) */}
                 <div className="flex flex-col gap-4">
                     <div className="px-6 flex flex-col gap-1">
                         <span className="flex flex-row gap-2 items-center">
@@ -131,38 +140,54 @@ export default function SignedPage() {
                     </div>
                     <div className="w-full flex flex-row gap-2 items-center overflow-x-auto pb-4 px-6 no-scrollbar">
                         {materiMTK.filter(i => i.class === 7).slice(0, 4).map((i, idx) => (
-                            <div className="bg-gray-100 px-6 py-2 shrink-0 rounded-full">
-                                <p className="text-xs">{i.title}</p>
+                            <div className={`bg-gray-100 px-6 py-2 shrink-0 rounded-full border-1 ${idx <= 1 ? ' border-blue-200' : idx === 2 ? 'border-orange-200' : 'border-red-200'}`}>
+                                <p className="text-xs font-[urbanist] font-bold">{i.title}</p>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* ============================
-                STATS — ADA SKELETON
-            ============================ */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mx-6">
+                {/* LIST MATERI KELAS 7-9 (SECTION) */}
+                <div className="w-full px-6 space-y-6">
+                    {/* Title */}
+                    <motion.div {...fadeUp} className="flex flex-col gap-1">
+                        <span className="flex flex-row gap-2 items-center">
+                            <WaypointsIcon width={16} />
+                            <h1 className="text-base font-semibold font-[poppins]">Silabus dan materi belajar</h1>
+                        </span>
+                        <p className="text-xs text-stone-400">
+                            Mulai belajar matematika sesuai dengan tingkatan kamu, mulai dari kelas 7 - 9.
+                        </p>
+                    </motion.div>
 
-                    {progress === null ? (
-                        [...Array(4)].map((_, i) => (
-                            <div
-                                key={i}
-                                className="h-20 bg-gray-200 rounded-lg animate-pulse"
-                            />
-                        ))
-                    ) : (
-                        <>
-                            <StatCard color="blue" label="Total Poin" value={totalScore} />
-                            <StatCard color="yellow" label="Level" value={level} />
-                            <StatCard color="green" label="Materi Dibaca" value={totalRead} />
-                            <StatCard color="purple" label="Streak" value={`${streak} hari`} />
-                        </>
-                    )}
+                    {/* <div
+                        className="h-20 bg-gray-200 rounded-lg animate-pulse"
+                    /> */}
+
+                    {/* LIST KELAS */}
+                    <div className="w-full">
+                        <div className="space-y-6">
+                            {[7, 8, 9].map((cls, cidx) => {
+                                const filtered = materiMTK.filter((i) => i.class === cls)
+                                return (
+                                    <div key={cidx} className="w-full h-full">
+                                        <h1 className="font-semibold text-base font-[poppins]">Kelas {cls}</h1>
+                                        <div className="w-full flex flex-row gap-4">
+                                            {filtered.map((i, idx) =>
+                                                <p className="text-xs text-stone-400 font-bold font-[urbanist]">{i.title}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+
+                        </div>
+                    </div>
+
                 </div>
 
-                {/* ============================
-                LEADERBOARD — ADA SKELETON
-            ============================ */}
+
+                {/* LEADERBOARD — ADA SKELETON */}
                 <div className="bg-white rounded-xl p-4 shadow-sm mx-6">
                     <h2 className="font-semibold text-lg mb-3">Leaderboard</h2>
 
@@ -200,84 +225,62 @@ export default function SignedPage() {
                     )}
                 </div>
 
-                {/* ============================
-                REKOMENDASI — ADA SKELETON
-            ============================ */}
-                <div className="p-4 bg-white border rounded-xl shadow-sm mx-6">
-                    <h3 className="font-semibold text-lg mb-2">Rekomendasi Materi</h3>
-
-                    {progress === null ? (
-                        <div className="h-14 bg-gray-200 rounded-md animate-pulse" />
-                    ) : !recommended ? (
-                        <p className="text-sm text-neutral-500">Semua materi sudah selesai.</p>
-                    ) : (
-                        <div>
-                            <p className="font-medium text-gray-800">{recommended}</p>
-                            <a
-                                href={`/materi/${encodeURIComponent(recommended)}`}
-                                className="inline-block mt-2 px-3 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
-                            >
-                                Mulai
-                            </a>
-                        </div>
-                    )}
-                </div>
             </  div>
         </div>
     );
 }
 
 //* Semua warna Tailwind yang umum */
-const colorMap: Record<string, {
-    bg: string;
-    border: string;
-    text: string;
-}> = {
-    slate: { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-700" },
-    gray: { bg: "bg-gray-50", border: "border-gray-200", text: "text-gray-700" },
-    zinc: { bg: "bg-zinc-50", border: "border-zinc-200", text: "text-zinc-700" },
-    neutral: { bg: "bg-neutral-50", border: "border-neutral-200", text: "text-neutral-700" },
-    stone: { bg: "bg-stone-50", border: "border-stone-200", text: "text-stone-700" },
+// const colorMap: Record<string, {
+//     bg: string;
+//     border: string;
+//     text: string;
+// }> = {
+//     slate: { bg: "bg-slate-50", border: "border-slate-200", text: "text-slate-700" },
+//     gray: { bg: "bg-gray-50", border: "border-gray-200", text: "text-gray-700" },
+//     zinc: { bg: "bg-zinc-50", border: "border-zinc-200", text: "text-zinc-700" },
+//     neutral: { bg: "bg-neutral-50", border: "border-neutral-200", text: "text-neutral-700" },
+//     stone: { bg: "bg-stone-50", border: "border-stone-200", text: "text-stone-700" },
 
-    red: { bg: "bg-red-50", border: "border-red-200", text: "text-red-700" },
-    orange: { bg: "bg-orange-50", border: "border-orange-200", text: "text-orange-700" },
-    amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700" },
-    yellow: { bg: "bg-yellow-50", border: "border-yellow-200", text: "text-yellow-700" },
-    lime: { bg: "bg-lime-50", border: "border-lime-200", text: "text-lime-700" },
+//     red: { bg: "bg-red-50", border: "border-red-200", text: "text-red-700" },
+//     orange: { bg: "bg-orange-50", border: "border-orange-200", text: "text-orange-700" },
+//     amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700" },
+//     yellow: { bg: "bg-yellow-50", border: "border-yellow-200", text: "text-yellow-700" },
+//     lime: { bg: "bg-lime-50", border: "border-lime-200", text: "text-lime-700" },
 
-    green: { bg: "bg-green-50", border: "border-green-200", text: "text-green-700" },
-    emerald: { bg: "bg-emerald-50", border: "border-emerald-200", text: "text-emerald-700" },
-    teal: { bg: "bg-teal-50", border: "border-teal-200", text: "text-teal-700" },
-    cyan: { bg: "bg-cyan-50", border: "border-cyan-200", text: "text-cyan-700" },
-    sky: { bg: "bg-sky-50", border: "border-sky-200", text: "text-sky-700" },
+//     green: { bg: "bg-green-50", border: "border-green-200", text: "text-green-700" },
+//     emerald: { bg: "bg-emerald-50", border: "border-emerald-200", text: "text-emerald-700" },
+//     teal: { bg: "bg-teal-50", border: "border-teal-200", text: "text-teal-700" },
+//     cyan: { bg: "bg-cyan-50", border: "border-cyan-200", text: "text-cyan-700" },
+//     sky: { bg: "bg-sky-50", border: "border-sky-200", text: "text-sky-700" },
 
-    blue: { bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-700" },
-    indigo: { bg: "bg-indigo-50", border: "border-indigo-200", text: "text-indigo-700" },
-    violet: { bg: "bg-violet-50", border: "border-violet-200", text: "text-violet-700" },
-    purple: { bg: "bg-purple-50", border: "border-purple-200", text: "text-purple-700" },
-    fuchsia: { bg: "bg-fuchsia-50", border: "border-fuchsia-200", text: "text-fuchsia-700" },
+//     blue: { bg: "bg-blue-50", border: "border-blue-200", text: "text-blue-700" },
+//     indigo: { bg: "bg-indigo-50", border: "border-indigo-200", text: "text-indigo-700" },
+//     violet: { bg: "bg-violet-50", border: "border-violet-200", text: "text-violet-700" },
+//     purple: { bg: "bg-purple-50", border: "border-purple-200", text: "text-purple-700" },
+//     fuchsia: { bg: "bg-fuchsia-50", border: "border-fuchsia-200", text: "text-fuchsia-700" },
 
-    pink: { bg: "bg-pink-50", border: "border-pink-200", text: "text-pink-700" },
-    rose: { bg: "bg-rose-50", border: "border-rose-200", text: "text-rose-700" }
-};
+//     pink: { bg: "bg-pink-50", border: "border-pink-200", text: "text-pink-700" },
+//     rose: { bg: "bg-rose-50", border: "border-rose-200", text: "text-rose-700" }
+// };
 
 
-/* Komponen */
-function StatCard({
-    label,
-    value,
-    color
-}: {
-    label: string;
-    value: number | string;
-    color: string;
-}) {
-    const theme = colorMap[color] ?? colorMap.blue; // fallback aman
+// /* Komponen */
+// function StatCard({
+//     label,
+//     value,
+//     color
+// }: {
+//     label: string;
+//     value: number | string;
+//     color: string;
+// }) {
+//     const theme = colorMap[color] ?? colorMap.blue; // fallback aman
 
-    return (
-        <div className={`p-4 rounded-xl border ${theme.bg} ${theme.border}`}>
-            <p className="text-xs text-gray-500">{label}</p>
-            <p className={`text-xl font-bold ${theme.text}`}>{value}</p>
-        </div>
-    );
-}
+//     return (
+//         <div className={`p-4 rounded-xl border ${theme.bg} ${theme.border}`}>
+//             <p className="text-xs text-gray-500">{label}</p>
+//             <p className={`text-xl font-bold ${theme.text}`}>{value}</p>
+//         </div>
+//     );
+// }
