@@ -3,7 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --accentColor: #2c75ff; 
+  --accentColor: #2a01ff; 
 }
 
 /* h1 {
@@ -17,16 +17,16 @@
 
 /* CAROUSEL */
 .custom-pagination .swiper-pagination-bullet {
-  margin: 0 1px !important;
+  margin: 0 0px !important;
   width: 16px !important;
   height: 4px !important;
   border-radius: 8px !important;
-  background: #cbd5e1 !important;
+  background: oklch(66.41% 0.00116 13.594) !important;
 }
 
 .custom-pagination .swiper-pagination-bullet-active {
   width: 32px !important;
-  background: oklch(70.7% 0.022 261.325); 
+  background: oklch(70.9% 0.01 56.259) !important;
 }
 
 

@@ -43,7 +43,9 @@ export async function GET() {
         createdAt: user.createdAt,
         level: user.level ?? 1,
         exp: user.exp ?? 0,
-        streak: user.streak ?? 0
+        streak: user.streak ?? 0,
+        points: user.points ?? 0,
+        grade: user.grade ?? "Kelas 7"
       }
     });
 

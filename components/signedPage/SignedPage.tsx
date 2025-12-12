@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@/context/userDataCookie";
-import { SearchIcon, SettingsIcon, TrophyIcon } from "lucide-react";
+import { BellIcon, SearchIcon, SettingsIcon, TrophyIcon } from "lucide-react";
 // import Image from "next/image";
 import { Swiper } from "swiper/react";
 import 'swiper/css'
@@ -50,32 +50,28 @@ export default function SignedPage() {
     const trophyColors = ['text-yellow-500', 'text-gray-400', 'text-amber-700'];
 
     return (
-        <motion.div
-            className="w-full pb-24 space-y-6"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-        >
+        <div className="flex flex-col gap-0">
             {/* Greeting — TAMPIL LANGSUNG (tidak perlu data API) */}
-            <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-4 px-6 gap-4">
+            <div className="bg-[var(--accentColor)] w-full h-full flex justify-between flex-col pt-8 pb-16 px-6 gap-4">
                 <div className="w-full h-full flex flex-row justify-between items-center gap-0">
                     <div>
-                        <h1 className="font-bold text-lg text-white">
+                        <h1 className="font-bold font-[poppins] text-base text-white">
                             Halo, {user?.username || "User"}!
                         </h1>
-                        <p className="text-sm text-gray-300">Siap belajar hari ini?</p>
+                        <p className="text-xs  text-gray-300  font-[poppins]">Siap belajar matematika hari ini?</p>
                     </div>
                     <div className="w-fit h-full flex flex-row gap-4 items-center shrink-0">
-                        <p className="text-xs text-gray-300">{user?.points ?? '0'} points</p>
-                        <Link href={'/dashboard/profil'} className="w-10 h-10 outline-1 outline-gray-400 rounded-full">
+                        {/* <p className="text-xs text-gray-300">{user?.grade}</p> */}
+                        <BellIcon width={18} className="text-white"/>
+                        <Link href={'/dashboard/profil'} className="w-8 h-8 outline-0 outline-gray-400 rounded-full">
                             <img src={user?.avatar || '/Assets/onPage/defaultProfile.png'} alt="" width={'100%'} className={` rounded-full object-cover ${!user?.avatar && 'scale-[135%]'}`} />
                         </Link>
                     </div>
                 </div>
                 <div className="flex items-center justify-between gap-3">
-                    <div className="w-full h-full flex items-center gap-4 bg-gray-100 rounded-lg px-4">
+                    <div className="w-full h-full flex items-center gap-4 bg-white rounded-lg px-4">
                         <SearchIcon width={16} className="text-gray-400" />
-                        <input type="text" className="w-full h-10 outline-none border-none text-sm" placeholder="Cari materi" />
+                        <input type="text" className="w-full h-10 outline-none border-none text-xs" placeholder="Cari materi" />
                     </div>
                     <div className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-white">
                         <SettingsIcon width={16} className="text-gray-400" />
@@ -83,97 +79,102 @@ export default function SignedPage() {
                 </div>
             </div>
 
-            {/* ============================
+            {/* BODY SECTION */}
+            <div className="w-full pb-24 space-y-6 bg-white rounded-t-4xl mt-[-42px]" >
+
+
+                {/* ============================
                     CARAOUSEL
                 ============================ */}
-            <div className="h-48 w-full pb-8 px-6 mt-[-8px]">
-                <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]}/>
-            </div>
+                <div className="h-48 w-full pb-8 px-6 mt-6">
+                    <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]} />
+                </div>
 
-            {/* ============================
+                {/* ============================
                 STATS — ADA SKELETON
             ============================ */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mx-6">
-                {progress === null ? (
-                    [...Array(4)].map((_, i) => (
-                        <div
-                            key={i}
-                            className="h-20 bg-gray-200 rounded-lg animate-pulse"
-                        />
-                    ))
-                ) : (
-                    <>
-                        <StatCard color="blue" label="Total Poin" value={totalScore} />
-                        <StatCard color="yellow" label="Level" value={level} />
-                        <StatCard color="green" label="Materi Dibaca" value={totalRead} />
-                        <StatCard color="purple" label="Streak" value={`${streak} hari`} />
-                    </>
-                )}
-            </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mx-6">
+                    {progress === null ? (
+                        [...Array(4)].map((_, i) => (
+                            <div
+                                key={i}
+                                className="h-20 bg-gray-200 rounded-lg animate-pulse"
+                            />
+                        ))
+                    ) : (
+                        <>
+                            <StatCard color="blue" label="Total Poin" value={totalScore} />
+                            <StatCard color="yellow" label="Level" value={level} />
+                            <StatCard color="green" label="Materi Dibaca" value={totalRead} />
+                            <StatCard color="purple" label="Streak" value={`${streak} hari`} />
+                        </>
+                    )}
+                </div>
 
-            {/* ============================
+                {/* ============================
                 LEADERBOARD — ADA SKELETON
             ============================ */}
-            <div className="bg-white rounded-xl p-4 shadow-sm mx-6">
-                <h2 className="font-semibold text-lg mb-3">Leaderboard</h2>
+                <div className="bg-white rounded-xl p-4 shadow-sm mx-6">
+                    <h2 className="font-semibold text-lg mb-3">Leaderboard</h2>
 
-                {leaders === null ? (
-                    <div className="flex flex-col gap-2">
-                        {[...Array(3)].map((_, i) => (
-                            <div key={i} className="h-12 bg-gray-200 rounded-md animate-pulse" />
-                        ))}
-                    </div>
-                ) : leaders.length === 0 ? (
-                    <p className="text-sm text-neutral-500">Belum ada leaderboard.</p>
-                ) : (
-                    <ul className="space-y-3">
-                        {leaders.map((u, i) => (
-                            <li
-                                key={i}
-                                className="flex items-center justify-between bg-gray-50 p-3 rounded-md"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <span key={i} className={`font-bold ${trophyColors[i] || 'text-blue-600'}`}>
-                                        {i + 1}
-                                    </span>
-                                    <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
-                                        <img
-                                            src={u.avatar || "/Assets/onPage/defaultProfile.png"}
-                                            className="w-full h-full object-cover scale-[135%]"
-                                        />
+                    {leaders === null ? (
+                        <div className="flex flex-col gap-2">
+                            {[...Array(3)].map((_, i) => (
+                                <div key={i} className="h-12 bg-gray-200 rounded-md animate-pulse" />
+                            ))}
+                        </div>
+                    ) : leaders.length === 0 ? (
+                        <p className="text-sm text-neutral-500">Belum ada leaderboard.</p>
+                    ) : (
+                        <ul className="space-y-3">
+                            {leaders.map((u, i) => (
+                                <li
+                                    key={i}
+                                    className="flex items-center justify-between bg-gray-50 p-3 rounded-md"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <span key={i} className={`font-bold ${trophyColors[i] || 'text-blue-600'}`}>
+                                            {i + 1}
+                                        </span>
+                                        <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
+                                            <img
+                                                src={u.avatar || "/Assets/onPage/defaultProfile.png"}
+                                                className="w-full h-full object-cover scale-[135%]"
+                                            />
+                                        </div>
+                                        <span className="font-medium">{u.username}</span>
                                     </div>
-                                    <span className="font-medium">{u.username}</span>
-                                </div>
-                                <span className="text-sm text-gray-500">{u.points} poin</span>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
+                                    <span className="text-sm text-gray-500">{u.points} poin</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
 
-            {/* ============================
+                {/* ============================
                 REKOMENDASI — ADA SKELETON
             ============================ */}
-            <div className="p-4 bg-white border rounded-xl shadow-sm mx-6">
-                <h3 className="font-semibold text-lg mb-2">Rekomendasi Materi</h3>
+                <div className="p-4 bg-white border rounded-xl shadow-sm mx-6">
+                    <h3 className="font-semibold text-lg mb-2">Rekomendasi Materi</h3>
 
-                {progress === null ? (
-                    <div className="h-14 bg-gray-200 rounded-md animate-pulse" />
-                ) : !recommended ? (
-                    <p className="text-sm text-neutral-500">Semua materi sudah selesai.</p>
-                ) : (
-                    <div>
-                        <p className="font-medium text-gray-800">{recommended}</p>
-                        <a
-                            href={`/materi/${encodeURIComponent(recommended)}`}
-                            className="inline-block mt-2 px-3 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
-                        >
-                            Mulai
-                        </a>
-                    </div>
-                )}
-            </div>
-        </motion.div>
+                    {progress === null ? (
+                        <div className="h-14 bg-gray-200 rounded-md animate-pulse" />
+                    ) : !recommended ? (
+                        <p className="text-sm text-neutral-500">Semua materi sudah selesai.</p>
+                    ) : (
+                        <div>
+                            <p className="font-medium text-gray-800">{recommended}</p>
+                            <a
+                                href={`/materi/${encodeURIComponent(recommended)}`}
+                                className="inline-block mt-2 px-3 py-1 bg-blue-600 text-white rounded-md text-sm hover:bg-blue-700"
+                            >
+                                Mulai
+                            </a>
+                        </div>
+                    )}
+                </div>
+            </  div>
+        </div>
     );
 }
 
