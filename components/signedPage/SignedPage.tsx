@@ -65,20 +65,20 @@ export default function SignedPage() {
                         </h1>
                         <p className="text-sm text-gray-300">Siap belajar hari ini?</p>
                     </div>
-                    <div className="w-fit h-full flex flex-row gap-3 items-center shrink-0">
+                    <div className="w-fit h-full flex flex-row gap-4 items-center shrink-0">
                         <p className="text-xs text-gray-300">{user?.points ?? '0'} points</p>
-                        <Link href={'/dashboard/profil'} className="w-12 h-12 outline-1 outline-gray-400 rounded-full translate-x-[-2px]">
+                        <Link href={'/dashboard/profil'} className="w-10 h-10 outline-1 outline-gray-400 rounded-full">
                             <img src={user?.avatar || '/Assets/onPage/defaultProfile.png'} alt="" width={'100%'} className={` rounded-full object-cover ${!user?.avatar && 'scale-[135%]'}`} />
                         </Link>
                     </div>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                     <div className="w-full h-full flex items-center gap-4 bg-gray-100 rounded-lg px-4">
-                        <SearchIcon width={20} className="text-gray-400" />
-                        <input type="text" className="w-full h-13 outline-none border-none text-sm" placeholder="Cari materi" />
+                        <SearchIcon width={16} className="text-gray-400" />
+                        <input type="text" className="w-full h-10 outline-none border-none text-sm" placeholder="Cari materi" />
                     </div>
-                    <div className="shrink-0 w-13 h-13 rounded-lg flex items-center justify-center bg-white">
-                        <SettingsIcon width={20} className="text-gray-400" />
+                    <div className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-white">
+                        <SettingsIcon width={16} className="text-gray-400" />
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@ export default function SignedPage() {
             {/* ============================
                     CARAOUSEL
                 ============================ */}
-            <div className="h-52 w-full pb-8 px-6 mt-8">
+            <div className="h-48 w-full pb-8 px-6 mt-[-8px]">
                 <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]}/>
             </div>
 

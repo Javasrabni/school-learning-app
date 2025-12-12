@@ -17,17 +17,18 @@
 
 /* CAROUSEL */
 .custom-pagination .swiper-pagination-bullet {
-  width: 12px;
-  height: 4px;
-  border-radius: 8px;
-  background: #cbd5e1; /* slate-300 */
-  opacity: 1;
+  margin: 0 1px !important;
+  width: 16px !important;
+  height: 4px !important;
+  border-radius: 8px !important;
+  background: #cbd5e1 !important;
 }
 
 .custom-pagination .swiper-pagination-bullet-active {
-  background: oklch(70.7% 0.022 261.325); /* slate-900 */
-  width: 24px;
+  width: 32px !important;
+  background: oklch(70.7% 0.022 261.325); 
 }
+
 
 
 @theme inline {

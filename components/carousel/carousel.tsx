@@ -47,7 +47,7 @@ export default function Carousel({ images }: Props) {
       </Swiper>
 
       {/* Pagination berada DI LUAR */}
-      <div className="custom-pagination flex justify-center gap-1 mt-4"></div>
+      <div className="custom-pagination flex items-center justify-center gap-1 mt-4 w-[50%]"></div>
     </div>
   );
 }
