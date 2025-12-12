@@ -5,6 +5,7 @@ import { Autoplay, Pagination } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import Image from "next/image";
 
 interface Props {
   images: string[];
@@ -30,9 +31,11 @@ export default function Carousel({ images }: Props) {
           <SwiperSlide key={idx}>
             <div className="relative h-full">
               {/* Gambar */}
-              <img
+              <Image
                 src={img}
                 className="w-full h-full rounded-xl object-cover"
+                fill
+                alt=""
               />
 
               {/* GRADIENT OVERLAY */}

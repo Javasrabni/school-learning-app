@@ -3,12 +3,16 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useUser } from "@/context/userDataCookie";
-import { BellIcon, SearchIcon, SettingsIcon, TrophyIcon } from "lucide-react";
+import { BellIcon, PlayIcon, SearchIcon, SettingsIcon, SigmaSquareIcon, TrophyIcon } from "lucide-react";
 // import Image from "next/image";
-import { Swiper } from "swiper/react";
-import 'swiper/css'
 import Link from "next/link";
 import Carousel from "../carousel/carousel";
+type Material = {
+    _id: string;
+    title: string;
+    class: number;
+    subTopics: { title: string }[];
+};
 
 type ProgressType = {
     materialTitle: string;
@@ -18,6 +22,7 @@ type ProgressType = {
 
 export default function SignedPage() {
     const { user } = useUser();
+
 
     const [progress, setProgress] = useState<ProgressType[] | null>(null);
     const [leaders, setLeaders] = useState<any[] | null>(null);
@@ -49,6 +54,24 @@ export default function SignedPage() {
 
     const trophyColors = ['text-yellow-500', 'text-gray-400', 'text-amber-700'];
 
+    // GET MATERI MTK
+    const [materiMTK, setMateriMTK] = useState<Material[]>([])
+    useEffect(() => {
+        const MateriGetData = async () => {
+            try {
+                const res = await fetch("/api/materials");
+                const data = await res.json();
+                if (res.ok) {
+                    setMateriMTK(data)
+                    console.log(data, "DARI MATERI MTK")
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        };
+        MateriGetData()
+    }, [])
+
     return (
         <div className="flex flex-col gap-0">
             {/* Greeting — TAMPIL LANGSUNG (tidak perlu data API) */}
@@ -62,7 +85,7 @@ export default function SignedPage() {
                     </div>
                     <div className="w-fit h-full flex flex-row gap-4 items-center shrink-0">
                         {/* <p className="text-xs text-gray-300">{user?.grade}</p> */}
-                        <BellIcon width={18} className="text-white"/>
+                        <BellIcon width={18} className="text-white" />
                         <Link href={'/dashboard/profil'} className="w-8 h-8 outline-0 outline-gray-400 rounded-full">
                             <img src={user?.avatar || '/Assets/onPage/defaultProfile.png'} alt="" width={'100%'} className={` rounded-full object-cover ${!user?.avatar && 'scale-[135%]'}`} />
                         </Link>
@@ -86,14 +109,40 @@ export default function SignedPage() {
                 {/* ============================
                     CARAOUSEL
                 ============================ */}
-                <div className="h-48 w-full pb-8 px-6 mt-6">
+                <div className="h-48 w-full pb-8 px-6 mt-6 relative">
+                    <div className="absolute bottom-12 left-[50%] translate-x-[-50%] z-30 text-white bg-white px-4 py-[2px] rounded-full">
+                        <span className="flex flex-row gap-2 items-center">
+                            <PlayIcon width={12} className="text-[var(--accentColor)]" />
+                            <p className="text-xs text-black font-[inter]">Mulai</p>
+                        </span>
+
+                    </div>
                     <Carousel images={["/Assets/carousel/kelas7_cr.png", "/Assets/carousel/kelas8_cr.png", "/Assets/carousel/kelas9_cr.png"]} />
+                </div>
+
+                {/* DASAR */}
+                <div className="flex flex-col gap-4">
+                    <div className="px-6 flex flex-col gap-1">
+                        <span className="flex flex-row gap-2 items-center">
+                            <SigmaSquareIcon width={16} />
+                            <h1 className="text-base font-semibold font-[poppins]"> Mulai dari dasar</h1>
+                        </span>
+                        <p className="text-xs text-stone-400">Sebagai pondasi awal pemahaman matematika tingkat lanjut.</p>
+                    </div>
+                    <div className="w-full flex flex-row gap-2 items-center overflow-x-auto pb-4 px-6 no-scrollbar">
+                        {materiMTK.filter(i => i.class === 7).slice(0, 4).map((i, idx) => (
+                            <div className="bg-gray-100 px-6 py-2 shrink-0 rounded-full">
+                                <p className="text-xs">{i.title}</p>
+                            </div>
+                        ))}
+                    </div>
                 </div>
 
                 {/* ============================
                 STATS — ADA SKELETON
             ============================ */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mx-6">
+
                     {progress === null ? (
                         [...Array(4)].map((_, i) => (
                             <div
