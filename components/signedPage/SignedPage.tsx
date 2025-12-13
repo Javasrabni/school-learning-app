@@ -111,7 +111,7 @@ export default function SignedPage() {
             </div>
 
             {/* BODY SECTION */}
-            <div className="w-full space-y-2 bg-stone-100 rounded-t-4xl relative top-[-2.5rem]" >
+            <div className="w-full pb-4 space-y-2 bg-stone-100 rounded-t-4xl relative top-[-2.5rem]" >
 
 
 
@@ -206,7 +206,7 @@ export default function SignedPage() {
                     <motion.div {...fadeUp} className="flex flex-col gap-1">
                         <span className="flex flex-row gap-2 items-center">
                             <WaypointsIcon width={16} />
-                            <h1 className="text-base font-semibold font-[poppins]">Silabus dan materi belajar</h1>
+                            <h1 className="text-base font-semibold font-[poppins]">Materi Belajar</h1>
                         </span>
                         <p className="text-xs text-stone-500">
                             Mulai belajar matematika sesuai dengan tingkatan kamu, mulai dari kelas 7 - 9.
@@ -218,19 +218,22 @@ export default function SignedPage() {
                     /> */}
 
                     {/* LIST KELAS */}
-                    <div className="w-full">
-                        <div className="space-y-6">
+                    <div className="w-full h-full overflow-x-auto">
+                        <div className="flex flex-row gap-4 w-full h-full">
                             {[7, 8, 9].map((cls, cidx) => {
                                 const filtered = materiMTK.filter((i) => i.class === cls)
                                 return (
-                                    <div key={cidx} className="w-full h-full">
-                                        <h1 className="font-semibold text-base font-[poppins]">Kelas {cls}</h1>
-                                        <div className="w-full flex flex-row gap-4">
-                                            {filtered.map((i, idx) =>
+                                    <div key={cidx} className="w-[calc(13px*14)] h-[calc(13px*18)] bg-stone-100 rounded-xl flex flex-col shrink-0 p-4 justify-between items-end">
+                                        <div>
+
+                                            <h1 className="font-semibold text-base font-[poppins]">Kelas {cls}</h1>
+                                            {/* {filtered.map((i, idx) =>
                                                 <p className="text-xs text-stone-400 font-bold font-[urbanist]">{i.title}</p>
-                                            )}
+                                            )} */}
                                         </div>
+                                        <Link href={'/'} className="w-fit  px-4 py-1 bg-blue-500 rounded-full "><p className="text-white font-semibold text-xs font-[urbanist]">Mulai Belajar</p></Link>
                                     </div>
+                                    
                                 )
                             })}
 
