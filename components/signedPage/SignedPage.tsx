@@ -223,17 +223,45 @@ export default function SignedPage() {
                             {[7, 8, 9].map((cls, cidx) => {
                                 const filtered = materiMTK.filter((i) => i.class === cls)
                                 return (
-                                    <div key={cidx} className="w-[calc(13px*14)] h-[calc(13px*18)] bg-stone-100 rounded-xl flex flex-col shrink-0 p-4 justify-between items-end">
-                                        <div>
+                                    <div
+                                        key={cidx}
+                                        className="w-45.5 h-58.5 bg-stone-100 rounded-xl shrink-0 relative overflow-hidden"
+                                    >
+                                        {/* Background Image */}
+                                        <Image
+                                            src="/Assets/card/card2.png"
+                                            alt=""
+                                            fill
+                                            className="object-cover rounded-xl z-8"
+                                        />
 
-                                            <h1 className="font-semibold text-base font-[poppins]">Kelas {cls}</h1>
-                                            {/* {filtered.map((i, idx) =>
-                                                <p className="text-xs text-stone-400 font-bold font-[urbanist]">{i.title}</p>
-                                            )} */}
+                                        {/* Overlay supaya teks kebaca */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent z-9" />
+
+                                        {/* Content */}
+                                        <div className="flex flex-col justify-between items-end w-full h-full top-0 right-0 relative z-10 p-4">
+                                            <div className="items-end w-full flex flex-col">
+                                                <h1 className="font-semibold text-base font-[poppins] text-white">
+                                                    Kelas {cls}
+                                                </h1>
+
+                                                <p className="text-xs text-white/80 text-right font-bold font-[urbanist] mt-1">
+                                                    Silabus & Materi Terstruktur
+                                                </p>
+                                            </div>
+
+                                            <Link
+                                                href="/"
+                                                className="w-fit px-4 py-1 bg-blue-500 rounded-full shadow-md hover:bg-blue-600 transition"
+                                            >
+                                                <p className="text-white font-semibold text-xs font-[urbanist]">
+                                                    Mulai Belajar
+                                                </p>
+                                            </Link>
                                         </div>
-                                        <Link href={'/'} className="w-fit  px-4 py-1 bg-blue-500 rounded-full "><p className="text-white font-semibold text-xs font-[urbanist]">Mulai Belajar</p></Link>
                                     </div>
-                                    
+
+
                                 )
                             })}
 
