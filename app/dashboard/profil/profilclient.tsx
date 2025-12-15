@@ -65,15 +65,16 @@ export default function ProfileClient() {
 
         {/* HEADER */}
         <div className="flex flex-col items-center justify-between gap-4 relative" >
-          <div className="absolute w-full h-full top-0 left-0 flex items-center justify-center z-100">
+          <div className="absolute  w-full h-full top-0 left-0 flex items-center justify-center z-100">
             <p className="text-white font-bold font-[urbanist]">Profil</p>
           </div>
+          <div className="w-full h-full absolute z-50 bg-[var(--accentColor)] opacity-50"></div>
           <div className="w-full h-50 relative">
             <Image
               src={user?.avatar || "/Assets/onPage/defaultProfile.png"}
               alt=""
               fill
-              className="object-cover position-center brightness-20 blur-[4px] scale-[110%]"
+              className="object-cover position-center brightness-50 blur-[4px] scale-[110%]"
             />
           </div>
 
@@ -81,7 +82,7 @@ export default function ProfileClient() {
         </div>
 
 
-        <div className="flex flex-col space-y-6 relative top-[-50px] bg-gray-50 rounded-t-4xl justify-between gap-4 py-6 bg-white">
+        <div className="z-60 flex flex-col space-y-6 relative top-[-50px] bg-gray-50 rounded-t-4xl justify-between gap-4 py-6 bg-white">
           <div className="flex flex-row items-center justify-between gap-4 px-6">
             <div className="flex flex-row items-center gap-4">
               <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 shrink-0">

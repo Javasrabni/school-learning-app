@@ -14,6 +14,7 @@ import { fadeUp } from "@/app/dashboard/progress/page";
 import Leaderboard from "../Leaderboard";
 import Spinner from "../loadSpinner/loadSpinner";
 import OpenListMateri from "../detailMateri/detailMateri";
+import { useLogout } from "../auth/logout/logout";
 type Quiz = {
     question: string;
     options: string[];
@@ -119,6 +120,35 @@ export default function SignedPage() {
     }
 
     const [onSetting, setOnSetting] = useState(false)
+    const [valueOnSearch, setValueOnSearch] = useState<string | null>('')
+    const [onChangeSearch, setOnChangeSearch] = useState<Material[]>([])
+
+    // ON SEARCH MATERI
+    function HandleChangeSearch(value: string | null) {
+        setValueOnSearch(value);
+
+        if (!value) {
+            setOnChangeSearch([]);
+            return;
+        }
+
+        const result = materiMTK.filter((i) =>
+            i.title.toLowerCase().includes(value.toLowerCase())
+        );
+
+        setOnChangeSearch(result);
+    }
+
+    // LOGOUT
+    const logout = useLogout()
+    function Logout() {
+        const confirm = window.confirm("Yakin ingin logout?")
+        if(!confirm) {
+            return
+        } else {
+            logout()
+        }
+    }
 
     return (
         <div className="flex flex-col gap-0">
@@ -190,15 +220,45 @@ export default function SignedPage() {
 
                 {/* SEARCH INPUT N SETTING */}
                 <div className="flex items-center justify-between gap-3 relative">
+                    {onChangeSearch.length > 0 && (
+                        <div
+                            className="
+      absolute left-0 top-full mt-2 w-full
+      bg-white rounded-xl shadow-lg
+      border border-gray-200
+      z-[200]
+      max-h-64 overflow-y-auto
+    "
+                        >
+                            {onChangeSearch.map((item) => (
+                                <Link
+                                    key={item._id}
+                                    href={`/dashboard/material/${item._id}`}
+                                    className="
+          block px-4 py-3
+          text-sm font-[poppins]
+          text-gray-700
+          transition-colors
+          hover:bg-gray-100
+          active:bg-gray-200
+        "
+                                >
+                                    {item.title}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+
                     <div className="w-full h-full flex items-center gap-4 bg-white rounded-lg px-4">
                         <SearchIcon width={16} className="text-gray-500" />
-                        <input type="text" className="w-full h-10 outline-none border-none text-xs" placeholder="Cari materi" />
+                        <input type="text" className="w-full h-10 outline-none border-none text-xs" placeholder="Cari materi" value={valueOnSearch || ''} onChange={(e) => HandleChangeSearch(e.target.value)} />
+
                     </div>
-                    <div className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-white" onClick={()=> setOnSetting((prev)=> !prev)}>
+                    <div className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center bg-white" onClick={() => setOnSetting((prev) => !prev)}>
                         <SettingsIcon width={16} className="text-gray-500" />
                     </div>
                     {onSetting && (
-                        <div className="absolute z-200 bottom-[-90%] outline-1 outline-blue-200 right-0 bg-white flex items-center justify-between gap-2 px-4 py-[2px] rounded-md">
+                        <div className="absolute z-200 bottom-[-90%] outline-1 outline-blue-200 right-0 bg-white flex items-center justify-between gap-2 px-4 py-[2px] rounded-md" onClick={Logout}>
                             <LogOutIcon width={16} color="tomato" />
                             <p className="text-xs">Logout</p>
                         </div>
@@ -362,7 +422,7 @@ export default function SignedPage() {
                                             </div>
 
                                             <div className="w-full flex flex-row justify-between items-center">
-                                                <p className="text-xs text-white/80 text-right font-bold font-[urbanist]">{totalQuiz} Soal</p>
+                                                <p className="text-xs text-white/80 text-left font-bold font-[urbanist]">Total <br />{totalQuiz} Soal</p>
                                                 <button
                                                     onClick={() => OpenNGetDataListMateri(filtered, cls)}
                                                     className="w-fit px-4 py-1 bg-[var(--accentColor)] rounded-full shadow-md hover:bg-blue-600 transition"
